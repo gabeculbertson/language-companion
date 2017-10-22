@@ -6,7 +6,7 @@ A tool for learning Japanese with Final Fantasy XIV developed with C# and node.j
 
 * Look up works with a mouseover dictionary based on Rikai-chan
 * Read with automatically generated furigana (though it is not 100% accurate)
-* See both the official English translation for each Japanese line
+* See the official English translation for each Japanese line
 * Play on one device and learn on another - you can connect the tool to any device on your local network
 * Supports PC and can work with PS4 if you route your PS4 internet connection through your PC (look up Network Bridging)
 * Supports all A Realm Reborn and Heavensward quests (I don't have a PC copy of Stormblood)
