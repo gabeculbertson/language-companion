@@ -1,0 +1,20 @@
+{
+  "name": "gamehelper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "ejs": "^2.4.2",
+    "express": "^4.14.0",
+    "hepburn": "^1.0.0",
+    "kuromoji": "0.0.5",
+    "opener": "^1.4.3",
+    "socket.io": "^1.4.8"
+  }
+}

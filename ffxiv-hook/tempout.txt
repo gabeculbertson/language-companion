@@ -1,0 +1,109 @@
+Starting capture
+quest=165
+scene=0
+新米剣術士のお願い
+The Great Gladiator
+
+やあやあ、気が早いね。<br>すまないがサインは遠慮させてもらうよ。
+Have you come to wish me luck? I appreciate the thought, but there's no need to worry.
+
+おや、僕を知らないだって……？<br>今度剣闘士としてこのコロセウムでデビューする、<br>噂の超大物ルーキー、ザザリックとはズバリ僕のことさ！
+What!? You don't know who I am!? The next biggest thing that's coming to the Coliseum!?
+
+そうだ君、将来の大スターであるこの僕の、<br>華々しいデビュー戦を飾る装備が欲しいんだ。
+Zazarikku is my name, and you'll be hearing all about my exploits in the coming days. I've even thought of a title for myself: the Garnet Gladiator!
+
+ちょっと「彫金師ギルド」の受付まで行って、<br>この注文書どおり、カッコいいサークレットを、<br>発注してきてくれよ。
+Ah, which reminds me─I have yet to collect the circlet I commissioned from the Goldsmiths' Guild. You wouldn't mind picking it up for me, would you?
+
+Starting capture
+quest=165
+scene=0
+新米剣術士のお願い
+The Great Gladiator
+
+やあやあ、気が早いね。<br>すまないがサインは遠慮させてもらうよ。
+Have you come to wish me luck? I appreciate the thought, but there's no need to worry.
+
+おや、僕を知らないだって……？<br>今度剣闘士としてこのコロセウムでデビューする、<br>噂の超大物ルーキー、ザザリックとはズバリ僕のことさ！
+What!? You don't know who I am!? The next biggest thing that's coming to the Coliseum!?
+
+そうだ君、将来の大スターであるこの僕の、<br>華々しいデビュー戦を飾る装備が欲しいんだ。
+Zazarikku is my name, and you'll be hearing all about my exploits in the coming days. I've even thought of a title for myself: the Garnet Gladiator!
+
+ちょっと「彫金師ギルド」の受付まで行って、<br>この注文書どおり、カッコいいサークレットを、<br>発注してきてくれよ。
+Ah, which reminds me─I have yet to collect the circlet I commissioned from the Goldsmiths' Guild. You wouldn't mind picking it up for me, would you?
+
+Starting capture
+quest=165
+scene=0
+新米剣術士のお願い
+The Great Gladiator
+
+やあやあ、気が早いね。<br>すまないがサインは遠慮させてもらうよ。
+Have you come to wish me luck? I appreciate the thought, but there's no need to worry.
+
+おや、僕を知らないだって……？<br>今度剣闘士としてこのコロセウムでデビューする、<br>噂の超大物ルーキー、ザザリックとはズバリ僕のことさ！
+What!? You don't know who I am!? The next biggest thing that's coming to the Coliseum!?
+
+そうだ君、将来の大スターであるこの僕の、<br>華々しいデビュー戦を飾る装備が欲しいんだ。
+Zazarikku is my name, and you'll be hearing all about my exploits in the coming days. I've even thought of a title for myself: the Garnet Gladiator!
+
+ちょっと「彫金師ギルド」の受付まで行って、<br>この注文書どおり、カッコいいサークレットを、<br>発注してきてくれよ。
+Ah, which reminds me─I have yet to collect the circlet I commissioned from the Goldsmiths' Guild. You wouldn't mind picking it up for me, would you?
+
+Starting capture
+quest=165
+scene=0
+新米剣術士のお願い
+The Great Gladiator
+
+やあやあ、気が早いね。<br>すまないがサインは遠慮させてもらうよ。
+Have you come to wish me luck? I appreciate the thought, but there's no need to worry.
+
+おや、僕を知らないだって……？<br>今度剣闘士としてこのコロセウムでデビューする、<br>噂の超大物ルーキー、ザザリックとはズバリ僕のことさ！
+What!? You don't know who I am!? The next biggest thing that's coming to the Coliseum!?
+
+そうだ君、将来の大スターであるこの僕の、<br>華々しいデビュー戦を飾る装備が欲しいんだ。
+Zazarikku is my name, and you'll be hearing all about my exploits in the coming days. I've even thought of a title for myself: the Garnet Gladiator!
+
+ちょっと「彫金師ギルド」の受付まで行って、<br>この注文書どおり、カッコいいサークレットを、<br>発注してきてくれよ。
+Ah, which reminds me─I have yet to collect the circlet I commissioned from the Goldsmiths' Guild. You wouldn't mind picking it up for me, would you?
+
+Starting capture
+Starting capture
+quest=165
+scene=0
+新米剣術士のお願い
+The Great Gladiator
+
+やあやあ、気が早いね。<br>すまないがサインは遠慮させてもらうよ。
+Have you come to wish me luck? I appreciate the thought, but there's no need to worry.
+
+おや、僕を知らないだって……？<br>今度剣闘士としてこのコロセウムでデビューする、<br>噂の超大物ルーキー、ザザリックとはズバリ僕のことさ！
+What!? You don't know who I am!? The next biggest thing that's coming to the Coliseum!?
+
+そうだ君、将来の大スターであるこの僕の、<br>華々しいデビュー戦を飾る装備が欲しいんだ。
+Zazarikku is my name, and you'll be hearing all about my exploits in the coming days. I've even thought of a title for myself: the Garnet Gladiator!
+
+ちょっと「彫金師ギルド」の受付まで行って、<br>この注文書どおり、カッコいいサークレットを、<br>発注してきてくれよ。
+Ah, which reminds me─I have yet to collect the circlet I commissioned from the Goldsmiths' Guild. You wouldn't mind picking it up for me, would you?
+
+Starting capture
+quest=165
+scene=0
+新米剣術士のお願い
+The Great Gladiator
+
+やあやあ、気が早いね。<br>すまないがサインは遠慮させてもらうよ。
+Have you come to wish me luck? I appreciate the thought, but there's no need to worry.
+
+おや、僕を知らないだって……？<br>今度剣闘士としてこのコロセウムでデビューする、<br>噂の超大物ルーキー、ザザリックとはズバリ僕のことさ！
+What!? You don't know who I am!? The next biggest thing that's coming to the Coliseum!?
+
+そうだ君、将来の大スターであるこの僕の、<br>華々しいデビュー戦を飾る装備が欲しいんだ。
+Zazarikku is my name, and you'll be hearing all about my exploits in the coming days. I've even thought of a title for myself: the Garnet Gladiator!
+
+ちょっと「彫金師ギルド」の受付まで行って、<br>この注文書どおり、カッコいいサークレットを、<br>発注してきてくれよ。
+Ah, which reminds me─I have yet to collect the circlet I commissioned from the Goldsmiths' Guild. You wouldn't mind picking it up for me, would you?
+
