@@ -16,7 +16,7 @@ rt {
 	pointer-events: none;
 }
 
-#options-button {
+.header-button {
 	margin-right: 24px;
 	font-size: 32px;
 }
@@ -60,11 +60,24 @@ rt {
 	cursor: pointer;
 }
 
+.message {
+	background-color: yellow;
+	color: black;
+	position: fixed;
+	display: none;
+	bottom:0;
+	left:0;
+	width: 100%;
+	padding: 6px;
+	pointer-events: none;
+	font-size: 16px;
+}
+
 #container {
 	padding: 8px;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 500px) {
     body {
         font-size: 1rem;
     }
@@ -73,7 +86,7 @@ rt {
 		font-size: 1rem;
 	}
 
-	#options-button {
+	.header-button {
 		font-size: 1rem;
 	}
 

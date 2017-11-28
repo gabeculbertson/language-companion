@@ -2,7 +2,8 @@ const fs = require('fs');
 
 const config = {
 	"openChrome": true,
-	"chromePath": "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+	"chromePath": "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+	"target": null
 };
 
 if(fs.existsSync('./config.json')){

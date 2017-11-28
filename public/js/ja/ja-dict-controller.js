@@ -67,7 +67,8 @@ $.getScript( "/js/ja/data.js", function( data, textStatus, jqxhr ) {
 		}
 
 		if(searchResult && searchResult.data && searchResult.data.length > 0){
-			const size = searchResult.data[0][0].split(' ')[0].length;
+			const word = searchResult.data[0][0].split(' ')[0];
+			const size = word.length;
 			let newSelection = selectForward(node, range.startOffset, size);
 			let newRange = document.createRange();
 			newRange.setStart(newSelection.startNode, range.startOffset);
@@ -79,7 +80,7 @@ $.getScript( "/js/ja/data.js", function( data, textStatus, jqxhr ) {
 
 			if(lastSearchResult){
 				let clientRects = newRange.getClientRects();
-				$(document).trigger("definition-changed", [ dict.makeHtml(lastSearchResult), clientRects[0].left, clientRects[0].top, lastElement ]);
+				$(document).trigger("definition-changed", [ dict.makeHtml(lastSearchResult), clientRects[0].left, clientRects[0].top, lastElement, word ]);
 				e.preventDefault();
 			}
 		} else {

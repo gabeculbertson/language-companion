@@ -36,7 +36,9 @@ app.get('/new-text', function(req, res){
 	console.log(req.query.text);
 
 	req.query.text = req.query.text.replace(/<br>/g, "");
-	req.query.trans = req.query.trans.replace(/<br>/g, "");
+	if(req.query.trans){
+		req.query.trans = req.query.trans.replace(/<br>/g, "");
+	}
 
 	const template = fs.readFileSync('views/furigana.ejs', 'utf-8');
 	const furiOutput = furigana(req.query.text);
@@ -65,16 +67,16 @@ io.on('connection', function (socket) {
 
 console.log('listening on :1414');
 
-// if(config.openFfxivHook) {
-const ffxivHook = childProcess.spawn('FFXIVHook.exe', { cwd: 'ffxiv-hook/' });
-ffxivHook.stdout.on('data', (data) => {	console.log(`stdout: ${data}`); });
-ffxivHook.stderr.on('data', (data) => {	console.log(`stderr: ${data}`); });
+if(config.target == 'ffxiv') {
+	const ffxivHook = childProcess.spawn('FFXIVHook.exe', { cwd: 'ffxiv-hook/' });
+	ffxivHook.stdout.on('data', (data) => {	console.log(`stdout: ${data}`); });
+	ffxivHook.stderr.on('data', (data) => {	console.log(`stderr: ${data}`); });
 
-process.on("SIGINT", function () {
-	console.log('killing ffxivHook');
-	ffxivHook.kill();
-	process.exit();
-});
-// }
+	process.on("SIGINT", function () {
+		console.log('killing ffxivHook');
+		ffxivHook.kill();
+		process.exit();
+	});
+}
 
 opener([ "chrome", "--app=http://localhost:1414/" ]);

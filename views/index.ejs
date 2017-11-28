@@ -42,7 +42,7 @@
         	$defContainer = $(".top-box");
 
         	if(def == ""){
-        		if(!isMouseIn) $defContainer.hide();
+        		// if(!isMouseIn) $defContainer.hide();
         		return;
         	} 
 
@@ -66,6 +66,30 @@
 
         	window.scrollTo(0, scrollY);
 		};
+
+		let timeout = null;
+		const flashMessage = (text) => {
+			$(".message").html(text);
+        	$(".message").show();
+
+        	if(timeout) clearTimeout(timeout);
+
+        	timeout = setTimeout(() => {
+        		$(".message").fadeOut();
+        	}, 1000 * text.length / 10);
+		};
+
+		const requestFullScreen = () => {
+		    var el = document.documentElement,
+		      rfs = el.requestFullscreen
+		        || el.webkitRequestFullScreen
+		        || el.mozRequestFullScreen
+		        || el.msRequestFullscreen 
+		    ;
+
+		    rfs.call(el);
+		}
+
 
 		socket.on('new-text', function(msg){
 			console.log(msg);
@@ -98,8 +122,16 @@
 		    $(".top-box").css('max-width', Math.min($(window).width() - 32, 600));
 		    $("#container").css("min-height", ($(window).height() - 32) + 'px');
 
-	        $(document).on("definition-changed", (e, def, xPosition, yPosition, node) => {
+		    let currentWord = null;
+		    let currentPhrase = null;
+		    let lastWord = null;
+	        $(document).on("definition-changed", (e, def, xPosition, yPosition, node, word) => {
 	        	showDictionary(def, xPosition, yPosition, node);
+	        	if(word){
+	        		currentWord = word;
+	        		currentPhrase = $(node).closest('.text-chunk').attr('original');
+		        }
+	        	// console.log(currentWord);
 	        });
 
 	        $(document).mouseleave(function () {
@@ -113,6 +145,11 @@
 	        	});
 	        });
 
+	        $("#fullscreen-button").click(() => {
+	        	console.log('fs');
+	        	requestFullScreen();
+	        });
+
 	        $(document).on('options-changed', () => {
 	        	console.log('options-changed');
 	        	$(".text-chunk").each((index, element) => {
@@ -124,11 +161,24 @@
 	        		}
 	        	});
 	        });
+
+	        $(document.body).click(() => {
+	        	console.log(currentWord);
+	        	if(currentWord != lastWord){
+	        		flashMessage('<span style="color:gray">Storing:</span> ' + currentPhrase.replace(currentWord, `<b>${currentWord}</b>`));
+	        		lastWord = currentWord;
+	        		$.get('/write', { text: JSON.stringify({ word: currentWord, phrase: currentPhrase }) });
+	        	}
+	        });
 		});
 	</script>
 </head>
 <body>
-	<div style="position:fixed; width:100%; top:0; left:0; background-color:white; padding:4px; text-align: right; box-shadow: 0 10px 16px 0 rgba(0,0,0,0.2),0 6px 16px 0 rgba(0,0,0,0.19);"><i id="options-button" class="fa fa-cog link-button" aria-hidden="true"></i></div>
+	<div class="message"></div>
+	<div style="position:fixed; width:100%; top:0; left:0; background-color:white; padding:4px; text-align: right; box-shadow: 0 10px 16px 0 rgba(0,0,0,0.2),0 6px 16px 0 rgba(0,0,0,0.19);">
+		<i id="options-button" class="fa fa-cog link-button header-button" aria-hidden="true"></i>
+		<i id="fullscreen-button" class="fa fa-expand link-button header-button" aria-hidden="true"></i>
+	</div>
 	<div class="top-box no-dict">Hover over words to translate...</div>
     <div id="container" style="display:flex; align-items:flex-end; flex-direction:column">
     	<div style="flex:2; display: flex;"></div>
