@@ -106,7 +106,11 @@
 				textToFurigana[msg.text] = msg.html;
 			}
 			window.scrollTo(0,document.body.scrollHeight);
+
+			socket.emit('update-words');
 		});
+
+		// socket.on('')
 
 		$(document).ready(() => {
 			window.isMobile = mobileAndTabletcheck();
@@ -125,10 +129,12 @@
 		    let currentWord = null;
 		    let currentPhrase = null;
 		    let lastWord = null;
-	        $(document).on("definition-changed", (e, def, xPosition, yPosition, node, word) => {
+	        $(document).on("definition-changed", (e, def, xPosition, yPosition, node, word, length) => {
+	        	// console.log(word);
 	        	showDictionary(def, xPosition, yPosition, node);
 	        	if(word){
 	        		currentWord = word;
+	        		console.log(currentWord);
 	        		currentPhrase = $(node).closest('.text-chunk').attr('original');
 		        }
 	        	// console.log(currentWord);
@@ -170,8 +176,83 @@
 	        		$.get('/write', { text: JSON.stringify({ word: currentWord, phrase: currentPhrase }) });
 	        	}
 	        });
+
+	        $(document).keypress((e) => {
+	        	// console.log(e);
+	        	console.log(e.which);
+	        	if(e.which == 115) {
+	        		if(currentWord != null){
+						socket.emit('save-word', currentWord);
+						socket.emit('update-words');
+					}
+				}
+				if(e.which == 116) {
+					socket.emit('test-text');
+				}
+				if(e.which == 117) {
+					socket.emit('update-words');
+				}
+			});
+
+			socket.on('update-words', (words) => {
+				console.log(words);
+
+				const outWords = {};
+				for(word in words){
+					for(let i = 1; i <= word.length; i++){
+						outWords[word.substring(0, i)] = i == word.length;
+					}
+				}
+
+				console.log(outWords);
+
+				const rbs = $('rb');
+				let currentSubstring = "";
+				let currentRbStack = [];
+				for(let i = 0; i < rbs.length; i++){
+					console.log(rbs[i]);
+					const text = $(rbs[i]).text();
+					currentSubstring += text;
+					console.log(currentSubstring);
+
+					if(currentSubstring in outWords){
+						currentRbStack.push(rbs[i]);
+						if(outWords[currentSubstring]){
+							for(rb of currentRbStack){
+								$(rb).next().css('opacity', 0);
+								$(rb).toggleClass('bold', true);
+							}
+							currentSubstring = "";
+							currentRbStack = [];
+						}
+					} else if(text in outWords && outWords[text]){
+						$(rbs[i]).next().toggleClass('hidden-reading', true);
+						$(rbs[i]).toggleClass('bold', true);
+						currentSubstring = "";
+						currentRbStack = [];
+					} else {
+						currentSubstring = "";
+						currentRbStack = [];
+					}
+				}
+			});
 		});
 	</script>
+
+	<style type="text/css">
+		rb {
+			color: darkgray;
+		}
+
+		.bold {
+			color: black;
+			font-weight: bold;
+		}
+
+		.hidden-reading {
+			opacity: 0;
+		}
+	</style>
 </head>
 <body>
 	<div class="message"></div>

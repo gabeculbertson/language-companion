@@ -20,6 +20,8 @@ $.getScript( "/js/ja/data.js", function( data, textStatus, jqxhr ) {
 	let lastElement = null;
 	let lastStart = -1;
 	let lastSearchResult = null;
+	let lastStartNode = null;
+	let lastSize = 0;
 
 	const selectForward = (startNode, startIndex, length) => {
 		let endNode = startNode;
@@ -67,20 +69,25 @@ $.getScript( "/js/ja/data.js", function( data, textStatus, jqxhr ) {
 		}
 
 		if(searchResult && searchResult.data && searchResult.data.length > 0){
-			const word = searchResult.data[0][0].split(' ')[0];
-			const size = word.length;
+			// console.log(searchResult);
+			const size = searchResult.matchLen;
+			lastStartNode = node;
+			lastSize = size;
 			let newSelection = selectForward(node, range.startOffset, size);
 			let newRange = document.createRange();
 			newRange.setStart(newSelection.startNode, range.startOffset);
 			newRange.setEnd(newSelection.endNode, newSelection.endIndex); 
+			lastRange = newRange;
 
 			let selection = window.getSelection();
 			selection.removeAllRanges();
 			selection.addRange(newRange);
 
+			const word = newSelection.text; //searchResult.data[0][0].split(' ')[0];
+
 			if(lastSearchResult){
 				let clientRects = newRange.getClientRects();
-				$(document).trigger("definition-changed", [ dict.makeHtml(lastSearchResult), clientRects[0].left, clientRects[0].top, lastElement, word ]);
+				$(document).trigger("definition-changed", [ dict.makeHtml(lastSearchResult), clientRects[0].left, clientRects[0].top, lastElement, word, size ]);
 				e.preventDefault();
 			}
 		} else {
@@ -105,6 +112,33 @@ $.getScript( "/js/ja/data.js", function( data, textStatus, jqxhr ) {
 		if(lastSearchResult){
 			$(document).trigger("definition-changed", [ dict.makeHtml(lastSearchResult), lastStart, lastElement ]);
 			e.preventDefault();
+		}
+	});
+
+	$(document).keypress((e) => {
+		if(e.which == 97 || e.which == 100) {
+			if(e.which == 97) lastSize = Math.max(1, lastSize - 1);
+			if(e.which == 100) lastSize += 1;
+
+			let newSelection = selectForward(lastStartNode, lastStart, lastSize);
+
+			let newRange = document.createRange();
+			newRange.setStart(newSelection.startNode, lastStart);
+			newRange.setEnd(newSelection.endNode, newSelection.endIndex); 
+
+			let selection = window.getSelection();
+			selection.removeAllRanges();
+			selection.addRange(newRange);
+
+			const word = newSelection.text; //searchResult.data[0][0].split(' ')[0];
+
+			let searchResult = dict.wordSearch(word, false);
+			lastSearchResult = searchResult;
+			if(lastSearchResult){
+				let clientRects = newRange.getClientRects();
+				$(document).trigger("definition-changed", [ dict.makeHtml(lastSearchResult), clientRects[0].left, clientRects[0].top, lastElement, word, lastSize ]);
+				e.preventDefault();
+			}
 		}
 	});
 });

@@ -52,6 +52,11 @@ app.get('/write', function(req, res){
 	});
 });
 
+let savedWords = {};
+if(fs.existsSync('saved-words.json')){
+	savedWords = JSON.parse(fs.readFileSync('saved-words.json'));
+}
+
 io.on('connection', function (socket) {
 	console.log('socket connected');
 
@@ -63,6 +68,25 @@ io.on('connection', function (socket) {
 	socket.emit('new-text', `Open FFXIV and begin a quest to see the dialogue text here. Currently only ARR and Heavensward are supported because I don't have Stormblood on Steam.`);
 	socket.emit('new-text', `If you only have one monitor and still want to play fullscreen, you can use the tool on other devices on your local network (including a cell phone if needed) by entering one of these IP addresses into Chrome:<br>${ips.join(', ')}`);
 	socket.emit('new-text', "[DISCLAIMER] The furigana and dictionary entries may be wrong. You should double check anything that seems weird to avoid learning the wrong thing.");
+
+	socket.on('test-text', () => {
+		const text = "やっと返してかえしてきやがったわけさ。";
+		const template = fs.readFileSync('views/furigana.ejs', 'utf-8');
+		const furiOutput = furigana(text);
+		io.sockets.emit('new-text', { html: ejs.render(template, { elements: furiOutput }), text: text });
+	});
+
+	socket.on('save-word', (word) => {
+		if(!savedWords[word]){
+			savedWords[word] = 0;
+		}
+		savedWords[word] += 1;
+		fs.writeFileSync('saved-words.json', JSON.stringify(savedWords));
+	});
+
+	socket.on('update-words', () => {
+		socket.emit('update-words', savedWords);
+	});
 });
 
 console.log('listening on :1414');
