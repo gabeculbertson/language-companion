@@ -168,14 +168,14 @@
 	        	});
 	        });
 
-	        $(document.body).click(() => {
-	        	console.log(currentWord);
-	        	if(currentWord != lastWord){
-	        		flashMessage('<span style="color:gray">Storing:</span> ' + currentPhrase.replace(currentWord, `<b>${currentWord}</b>`));
-	        		lastWord = currentWord;
-	        		$.get('/write', { text: JSON.stringify({ word: currentWord, phrase: currentPhrase }) });
-	        	}
-	        });
+	        // $(document.body).click(() => {
+	        // 	console.log(currentWord);
+	        // 	if(currentWord != lastWord){
+	        // 		flashMessage('<span style="color:gray">Storing:</span> ' + currentPhrase.replace(currentWord, `<b>${currentWord}</b>`));
+	        // 		lastWord = currentWord;
+	        // 		$.get('/write', { text: JSON.stringify({ word: currentWord, phrase: currentPhrase }) });
+	        // 	}
+	        // });
 
 	        $(document).keypress((e) => {
 	        	// console.log(e);

@@ -79,15 +79,15 @@ rt {
 
 @media screen and (max-width: 500px) {
     body {
-        font-size: 1rem;
+        font-size: 1.5rem;
     }
 
     label {
-		font-size: 1rem;
+		font-size: 1.5rem;
 	}
 
 	.header-button {
-		font-size: 1rem;
+		font-size: 1.5rem;
 	}
 
 	#container {
