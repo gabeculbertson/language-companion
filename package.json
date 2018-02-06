@@ -15,6 +15,8 @@
     "hepburn": "^1.0.0",
     "kuromoji": "0.0.5",
     "opener": "^1.4.3",
-    "socket.io": "^1.4.8"
+    "socket.io": "^1.4.8",
+    "uuid": "^3.2.1",
+    "winston": "^3.0.0-rc1"
   }
 }

@@ -18,7 +18,9 @@ function breakDown(token){
 	return outObj;
 }
 
-module.exports = function(text){
+module.exports = function(text, options){
+	options = options || {};
+
 	var tokens = jaTools.getTokensSync(text);
 	console.log(tokens);
 	var outTokens = [];
@@ -34,5 +36,15 @@ module.exports = function(text){
 		}
 	}
 	console.log(outTokens);
+
+	if(options.onlyFurigana){
+		let text = "";
+		for(let token of outTokens){
+			console.log(token);
+			text += token.r || token.s;
+		}
+		return text;
+	}
+
 	return outTokens;
 }

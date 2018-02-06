@@ -1,0 +1,254 @@
+<% 
+	let timeString = "a long time";  
+	if(time == null){
+		timeString = "no cards have been made"
+	} else {
+		const minutes = (time - new Date().getTime()) / (1000 * 60);
+		const hours = (time - new Date().getTime()) / (1000 * 60 * 60);
+		if(minutes < 60) {
+			timeString = Math.round(minutes);
+			if(timeString == 1) timeString += " minute";
+			else timeString += " minutes";
+		} else if(hours < 17) {
+			timeString =  Math.round(hours);
+			if(timeString == 1) timeString += " hour";
+			else timeString += " hours";
+		} else {
+			timeString = Math.round(hours / 24);
+			if(timeString == 1) timeString += " day";
+			else timeString += " days";
+		}
+	}
+
+
+	let dayStart = new Date();
+	dayStart.setHours(0,0,0,0);
+
+	let dayEnd = new Date();
+	dayEnd.setHours(23,59,59,999);
+
+	let createdToday = 0;
+	for(let id in facts){
+		const created = facts[id].created;
+		if(created >= dayStart && created <= dayEnd){
+			createdToday++;
+		}
+	}
+%>
+<html>
+<head>
+	<title>(<%= createdToday %> new, <%= remaining %> rem) Review</title>
+	<script src="/js/jquery-3.2.1.min.js"></script>
+	<script src="https://use.fontawesome.com/d8b5485bc7.js"></script>
+
+	<script type="text/javascript">
+		const targetId = '<%= fact.id %>';
+		let start = new Date().getTime();
+		let results = {};
+		let lastInput = "";
+		let complete = false;
+		let tries = 1;
+
+		<% if(condition == 0) { %>
+		const showCorrectAnswer = (res) => {
+			$('#reading-input').val(res.reading);
+		};
+		<% } else { %> 
+		const showCorrectAnswer = (res) => {
+			$("#speech-out").text(res.reading);
+		};
+		<% } %>
+
+		const handleAnswerResponse = (res) => {
+			console.log(res);
+			start = new Date().getTime();
+			if(res.correct == 1){
+				$("body").css('background-color', 'lightgreen');
+				$("#continue").show();
+				complete = true;
+				showCorrectAnswer(res);
+			} else {
+				$("body").css('background-color', 'pink');
+				if(tries == 0){
+					$("#continue").show();
+					complete = true;
+					showCorrectAnswer(res);
+				} else {
+					tries--;
+				}
+			}
+		};
+
+		const showError = (text) => {
+			$(".error").text(text);
+			$('.error').fadeIn().delay(5000).fadeOut();
+		};
+
+		$(document).ready(() => {
+			var recognition = new webkitSpeechRecognition();
+			recognition.continuous = false;
+	        recognition.interimResults = true;
+	        recognition.maxAlternatives = 40;
+	        recognition.lang = 'ja';
+
+
+
+			recognition.onresult = function(event) { 
+				console.log(event);
+	            if (typeof(event.results) == 'undefined') {
+	                console.log('error');
+	                recognition.onend = null;
+	                recognition.stop();
+	                upgrade();
+	                return;
+	            } 
+
+	            for (var i = event.resultIndex; i < event.results.length; ++i) {
+	                var speechOut = event.results[i][0].transcript;
+	                console.log(speechOut);
+	                if (event.results[i].isFinal) {
+	                	console.log('final');
+	                	results = event.results[i];
+	                	console.log(results);
+		        	} else {
+		        		$("#speech-out").toggleClass('partial', true);
+		        		$("#speech-out").text(speechOut);
+		        	}
+	            }
+	        };
+
+	        recognition.onstart = function() {
+	            console.log('starting');
+	        };
+
+	        recognition.onerror = function(event) {
+	            console.log(event.error);
+	            console.log(event);  
+	        };
+
+	        const startRecording = () => {
+	        	$("#mic-button").toggleClass('recording', true);
+				$("#mic-button").attr('disabled', true);
+
+				recognition.onend = function(){ 
+					console.log('end');
+					console.log({ id: targetId, type: 's', results: results });
+					const outResults = [];
+					for(let i = 0; i < results.length; i++){
+						outResults.push(results[i].transcript);
+					}
+					// , results: results
+		    		$.post('/review', { id: targetId, type: 's', results: outResults, duration: new Date().getTime() - start, tries: tries }, (res) => {
+		    			handleAnswerResponse(res);
+		    			$("#speech-out").toggleClass('partial', false);
+		    			$("#mic-button").toggleClass('recording', false);
+		    			if(res.correct == 0){
+		    				$("#mic-button").attr('disabled', false);
+		    			}
+		    		});
+		    	}
+		    	recognition.start();
+	        };
+
+			$("#mic-button").click(() => {
+				startRecording();
+			});
+
+			$(document).keypress((e) => {
+	        	console.log(e.which);
+	        	if(e.which == 13) {
+	        		if(complete){
+		        		location.reload();
+		        	}
+
+	        		const input = $('#reading-input').val();
+	        		if(input == lastInput){
+	        			showError("Change the text");
+	        			return;
+	        		}
+
+	        		if($("#reading-input").length > 0 && !complete){
+	        			lastInput = input;
+		        		$('#reading-input').attr('disabled', true);
+		        		$.post('/review', { id: targetId, type: 't', input: input, duration: new Date().getTime() - start, tries: tries }, (res) => {
+		        			handleAnswerResponse(res);
+		        			if(res.correct == 0){
+		        				$('#reading-input').attr('disabled', false);
+		        				$('#reading-input').select();
+		        			}
+		        		});
+		        	}
+				}
+
+				if(e.which == 32) {
+					if($("#mic-button").length > 0 && !$("#mic-button").attr('disabled') && !complete){
+						startRecording();
+					}
+				}
+			});
+
+			$("#continue").click(() => {
+				if(complete){
+	        		location.reload();
+	        	}
+			});
+
+			$('#reading-input').focus();
+
+			$("#delete-review").click(() => {
+				if(confirm("Are you sure you want to delete this?")){
+					$.post('/delete-review', { id: targetId }, () => {
+						location.reload();
+					});
+				}
+			});
+		});
+	</script>
+
+	<style type="text/css">
+		.recording {
+			background-color: red;
+		}
+
+		.partial {
+			color: gray;
+		}
+
+		.band {
+			padding-top: 16px;
+			padding-bottom: 16px;
+			background-color: rgba(255,255,255,0.5);
+			width: 100%;
+			border-style:none;
+		}
+
+		.error {
+			padding-top: 16px;
+			padding-bottom: 16px;
+			background-color: rgba(255,255,102,0.5);
+			display: none;
+			text-align: center;
+		}
+
+		body {
+			font-family: Sans-Serif;
+			background-color: #d9d9d9;
+			width:100%; 
+			padding: 0; 
+			margin: 100px 0;
+		}
+	</style>
+</head>
+<body>
+	<div class="band" style="text-align:center; font-size: 2rem"><%- fact.context.replace(fact.target, `『<b>${fact.target}</b>』`) %></div>
+	<br>
+	<% if(condition == 0) { %>
+	<input class="band" id="reading-input" type="text" name="" style="text-align:center; font-size: 2rem">
+	<% } else { %>
+	<div class="band"  style="text-align:center; font-size: 2rem"><button id="mic-button" style="text-align:center; font-size: 2rem"><i class="fa fa-microphone" aria-hidden="true"></i></button> 	&nbsp;	&nbsp;	&nbsp;	&nbsp;<span id="speech-out"></span></div>
+	<% } %>
+	<div class="error"></div>
+	<div style="height: 100px;"></div>
+	<div id="continue" class="band" style="display: none; font-style: italic; text-align: center">Press enter or click to continue... (<%= remaining %> remaining) <button id="delete-review">delete</button></div>
+</body>
+</html>

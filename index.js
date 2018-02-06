@@ -5,12 +5,14 @@ const io = require('socket.io')(server);
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const opener = require('opener');
+const uuidv4 = require('uuid/v4');
 
 const childProcess= require("child_process");
 
 const ejs = require('ejs');
 
 const furigana = require('./libs/furigana');
+const review = require('./libs/review');
 const config = require('./libs/config');
 const ip = require('./libs/network-ip');
 const cleanHtml = require('./libs/clean-html');
@@ -23,6 +25,8 @@ app.set('view engine', 'ejs');
 app
 	.use(bodyParser.urlencoded({ limit: '1mb', extended: true }))
 	.use(bodyParser.json({ limit: '1mb' }));
+
+review.init(app);
 
 app.get('/', function(req, res){
 	res.render('index');
@@ -52,9 +56,21 @@ app.get('/write', function(req, res){
 	});
 });
 
+app.get('/furigana', (req, res) => {
+	console.log('furi-in: ' + req.query.text);
+	let furi = furigana(req.query.text, { onlyFurigana: true });
+	console.log('furi-out: ', furi);
+	res.send(furi);
+});
+
 let savedWords = {};
 if(fs.existsSync('saved-words.json')){
 	savedWords = JSON.parse(fs.readFileSync('saved-words.json'));
+}
+
+let facts = {};
+if(fs.existsSync('facts.json')){
+	facts = JSON.parse(fs.readFileSync('facts.json'));
 }
 
 io.on('connection', function (socket) {
@@ -86,6 +102,28 @@ io.on('connection', function (socket) {
 
 	socket.on('update-words', () => {
 		socket.emit('update-words', savedWords);
+	});
+
+	socket.on('learn-word', (data) => {
+		if(fs.existsSync('facts.json')){
+			facts = JSON.parse(fs.readFileSync('facts.json'));
+		}
+		
+		for(let id in facts){
+			const fact = facts[id];
+			if(fact.target == data.target && fact.context == data.context){
+				console.log("fact already recorded: ");
+				console.log(fact.target);
+				return;
+			}
+		}
+
+		const guid = uuidv4();
+		data.id = guid;
+		data.created = new Date().getTime();
+		facts[guid] = data;
+		fs.writeFileSync('facts.json', JSON.stringify(facts));
+		console.log("fact saved: ", data);
 	});
 });
 

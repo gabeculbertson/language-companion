@@ -134,8 +134,8 @@
 	        	showDictionary(def, xPosition, yPosition, node);
 	        	if(word){
 	        		currentWord = word;
-	        		console.log(currentWord);
 	        		currentPhrase = $(node).closest('.text-chunk').attr('original');
+	        		console.log(currentWord, ", ", currentPhrase);
 		        }
 	        	// console.log(currentWord);
 	        });
@@ -191,6 +191,20 @@
 				}
 				if(e.which == 117) {
 					socket.emit('update-words');
+				}
+				if(e.which == 102) {
+					if(currentWord != null){
+						$.get('/furigana', { text: currentWord }, (res) => {
+							let reading = prompt(`Enter pronunciation for:\n${currentWord}`, res);
+
+							if (reading == null || reading == "") {
+							    console.log("canceled reading");
+							} else {
+							    socket.emit('learn-word', { target: currentWord, context: currentPhrase, reading: reading });
+								socket.emit('update-words');
+							}
+						});
+					}
 				}
 			});
 

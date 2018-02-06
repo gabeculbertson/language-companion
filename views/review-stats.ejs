@@ -1,0 +1,132 @@
+<html>
+<head>
+	<title>Review dashboard</title>
+	<script src="/js/jquery-3.2.1.min.js"></script>
+	<script src="https://use.fontawesome.com/d8b5485bc7.js"></script>
+
+	<style type="text/css">
+		.recording {
+			background-color: red;
+		}
+
+		.partial {
+			color: gray;
+		}
+
+		.band {
+			padding-top: 16px;
+			padding-bottom: 16px;
+			background-color: rgba(255,255,255,0.5);
+			width: 100%;
+			border-style:none;
+		}
+
+		body {
+			font-family: Sans-Serif;
+			background-color: #d9d9d9;
+			width:100%; 
+			padding: 0; 
+			margin: 100px 0;
+		}
+	</style>
+</head>
+<body>
+	<div class="band" style="text-align:center; font-size: 2rem">
+		<% 
+			function precisionRound(number, precision) {
+				var factor = Math.pow(10, precision);
+				return Math.round(number * factor) / factor;
+			}
+
+			let textReviews = 0;
+			let audioReviews = 0;
+			for(let id in reviewStates){
+				if(reviewStates[id].condition == 0){
+					textReviews++;
+				} else if(reviewStates[id].condition == 1){
+					audioReviews++;
+				}
+			}
+
+			let textTime = 0;
+			let audioTime = 0;
+			const reviewScores = { 
+				text: {
+					"-1": { correct: 0, total: 0 },
+					1: { correct: 0, total: 0 },
+					2: { correct: 0, total: 0}
+				},
+				audio: {
+					"-1": { correct: 0, total: 0 },
+					1: { correct: 0, total: 0 },
+					2: { correct: 0, total: 0}
+				}
+			};
+
+			let earliestCreated = new Date().getTime();
+			for(const id in facts){
+				if(facts[id].created && facts[id].created < earliestCreated){
+					earliestCreated = facts[id].created;
+				}
+			}
+
+			let textReviewLogCount = 0;
+			let audioReviewLogCount = 0;
+			for(const logEntry of reviewLogs){
+				const reviewState = reviewStates[logEntry.message.id];
+				if(!reviewState) continue;
+
+				if(reviewState.condition == 0){
+					if(logEntry.message.duration){
+						textTime += parseInt(logEntry.message.duration);
+						textReviewLogCount++;
+					}
+
+					for(let key in reviewScores.text){
+						if(!logEntry.message.streak) logEntry.message.streak = 0;
+						if(logEntry.message.streak && logEntry.message.streak >= parseInt(key)){
+							reviewScores.text[key].total++;
+							if(logEntry.message.result == 1){
+								reviewScores.text[key].correct++;
+							}
+						}
+					}
+				} else if (reviewState.condition == 1) {
+					if(logEntry.message.duration){
+						audioTime += parseInt(logEntry.message.duration);
+						audioReviewLogCount++;
+					}
+
+					for(let key in reviewScores.audio){
+						if(!logEntry.message.streak) logEntry.message.streak = 0;
+						if(logEntry.message.streak && logEntry.message.streak >= parseInt(key)){
+							reviewScores.audio[key].total++;
+							if(logEntry.message.result == 1){
+								reviewScores.audio[key].correct++;
+							}
+						}
+					}
+				}
+			}
+		%>
+		<%= textReviews %> text reviews (<%= Math.round(100 * reviewScores.text[-1].correct /  reviewScores.text[-1].total) %>% overall accuracy, <%= Math.round(100 * reviewScores.text[1].correct / reviewScores.text[1].total) %>% day or more accuracy, <%= Math.round(100 * reviewScores.text[2].correct / reviewScores.text[2].total) %>% two day or more accuracy)
+		<br>
+		[<%= reviewScores.text[-1].correct %>/<%= reviewScores.text[-1].total %>, <%= reviewScores.text[1].correct %>/<%= reviewScores.text[1].total %>, <%= reviewScores.text[2].correct %>/<%= reviewScores.text[2].total %>]
+		<br>
+		Spent <%= Math.floor(textTime / (1000 * 60 * 60)) %>h<%= Math.floor(textTime / (1000 * 60)) % 60 %>m on text reviews (avg. <%= precisionRound((textTime / 1000) / textReviewLogCount, 2) %> sec/rev)
+		<br>
+		<br>
+		<%= audioReviews %> audio reviews (<%= Math.round(100 * reviewScores.audio[-1].correct /  reviewScores.audio[-1].total) %>% overall accuracy, <%= Math.round(100 * reviewScores.audio[1].correct / reviewScores.audio[1].total) %>% day or more accuracy, <%= Math.round(100 * reviewScores.audio[2].correct / reviewScores.audio[2].total) %>% two day or more accuracy)
+		<br>
+		[<%= reviewScores.audio[-1].correct %>/<%= reviewScores.audio[-1].total %>, <%= reviewScores.audio[1].correct %>/<%= reviewScores.audio[1].total %>, <%= reviewScores.audio[2].correct %>/<%= reviewScores.audio[2].total %>]
+		<br>
+		Spent <%= Math.floor(audioTime / (1000 * 60 * 60)) %>h<%= Math.floor(audioTime / (1000 * 60)) % 60 %>m on audio reviews (avg. <%= precisionRound((audioTime / 1000) / audioReviewLogCount, 2) %> sec/rev)
+		<br>
+		<div style="font-size: 1.5rem">
+		<br>
+		<br>
+		<%= new Date() %> (began <%= Math.round((new Date().getTime() - earliestCreated)/(24 * 60 * 60 * 1000)) %> days ago)
+		</div>
+	</div>
+</body>
+</html>
