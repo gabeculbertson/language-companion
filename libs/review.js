@@ -123,6 +123,7 @@ module.exports.init = (app) => {
 			reviewLogger.log({ level: 'info', message: logMessage });
 			res.json(result);
 		} else if(req.body.type == 's'){
+			logMessage.result = 0;
 			for(let i = 0; i < req.body.results.length; i++){
 				let transcript = req.body.results[i];
 				if(transcript == original || transcript == reading){
